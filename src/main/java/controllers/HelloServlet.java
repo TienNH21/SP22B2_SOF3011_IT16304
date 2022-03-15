@@ -23,7 +23,8 @@ public class HelloServlet extends HttpServlet {
 	) throws ServletException, IOException {
 		String name = request.getParameter("ho_ten");
 		request.setAttribute("name", name);
-		request.getRequestDispatcher("/views/welcome.jsp")
+		request.setAttribute("view", "/views/welcome.jsp");
+		request.getRequestDispatcher("/views/layout.jsp")
 			.forward(request, response);
 	}
 
