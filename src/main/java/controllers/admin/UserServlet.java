@@ -1,6 +1,7 @@
 package controllers.admin;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -75,18 +76,7 @@ public class UserServlet extends HttpServlet {
 		HttpServletResponse response
 	) throws ServletException, IOException {
 		Date now = new Date();
-		RegisterData o1 = new RegisterData("Ng Van A", "HN",
-			"0123", "anv@gmail.com", "123123", 1, 0),
-			o2 = new RegisterData("Ng Van A", "HN", "0123",
-				"anv@gmail.com", "123123", 1, 0),
-			o3 = new RegisterData("Ng Van A", "HN", "0123",
-				"anv@gmail.com", "123123", 1, 0);
-		
-		List<RegisterData> ds = new ArrayList<RegisterData>();
-		ds.add(o1);
-		ds.add(o2);
-		ds.add(o3);
-		
+		List<User> ds = this.userDAO.all();
 		request.setAttribute("ds", ds);
 		request.setAttribute("now", now);
 		request.setAttribute("view",
@@ -135,21 +125,59 @@ public class UserServlet extends HttpServlet {
 		HttpServletRequest request,
 		HttpServletResponse response
 	) throws ServletException, IOException {
-		//
+		String idStr = request.getParameter("id");
+		int id = Integer.parseInt(idStr);
+		User entity = this.userDAO.findById(id);
+		request.setAttribute("user", entity);
+		request.setAttribute("view",
+			"/views/admin/users/edit.jsp");
+		request.getRequestDispatcher("/views/layout.jsp")
+			.forward(request, response);
 	}
 	
 	private void delete(
 		HttpServletRequest request,
 		HttpServletResponse response
 	) throws ServletException, IOException {
-		//
+		String idStr = request.getParameter("id");
+		int id = Integer.parseInt(idStr);
+		User entity = this.userDAO.findById(id);
+		try {
+			this.userDAO.delete(entity);
+			// TODO: Thông báo thành công
+		} catch (Exception e) {
+			// TODO: Thông báo lỗi
+			e.printStackTrace();
+		}
+
+		response.sendRedirect("/SP22B2_SOF3011_IT16304"
+				+ "/users/index");
 	}
 	
 	private void update(
 		HttpServletRequest request,
 		HttpServletResponse response
 	) throws ServletException, IOException {
-		//
+		String idStr = request.getParameter("id");
+		try {
+			int id = Integer.parseInt(idStr);
+			User oldValue = this.userDAO.findById(id);
+			User newValue = new User();
+			BeanUtils.populate(newValue,
+				request.getParameterMap());
+			
+			newValue.setPassword( oldValue.getPassword() );
+			
+			this.userDAO.update(newValue);
+			// TODO: Thông báo thành công
+			response.sendRedirect("/SP22B2_SOF3011_IT16304"
+				+ "/users/index");
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: Thông báo lỗi
+			response.sendRedirect("/SP22B2_SOF3011_IT16304"
+				+ "/users/edit?id=" + idStr);
+		}
 	}
 
 }

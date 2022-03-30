@@ -1,6 +1,9 @@
 package dao;
 
+import java.util.List;
+
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 
 import entities.User;
 import utils.JpaUtil;
@@ -52,5 +55,18 @@ public class UserDAO {
 			this.em.getTransaction().rollback();
 			throw e;
 		}
+	}
+	
+	public List<User> all() {
+		String jpql = "SELECT obj FROM User obj";
+		TypedQuery<User> query = this.em
+				.createQuery(jpql, User.class);
+
+		List<User> result = query.getResultList();
+		return result;
+	}
+	
+	public User findById(int id) {
+		return this.em.find(User.class, id);
 	}
 }
