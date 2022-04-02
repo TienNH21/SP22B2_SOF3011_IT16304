@@ -1,6 +1,8 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.List;
+
 import javax.persistence.*;
 
 
@@ -34,6 +36,9 @@ public class User implements Serializable {
 	private String password;
 
 	private String sdt;
+	
+	@OneToMany(mappedBy="user")
+	private List<Category> categories;
 
 	public User() {
 	}
@@ -100,6 +105,14 @@ public class User implements Serializable {
 
 	public void setSdt(String sdt) {
 		this.sdt = sdt;
+	}
+
+	public List<Category> getCategories() {
+		return categories;
+	}
+
+	public void setCategories(List<Category> categories) {
+		this.categories = categories;
 	}
 
 }
