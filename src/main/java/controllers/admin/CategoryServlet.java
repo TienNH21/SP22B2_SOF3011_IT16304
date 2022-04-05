@@ -40,16 +40,15 @@ public class CategoryServlet extends HttpServlet {
 	) throws ServletException, IOException {
 		Category cate = new Category();
 		String ten = request.getParameter("ten");
-		
 		int id = Integer.parseInt(
 			request.getParameter("user_id")
 		);
-		
+
 		User user = this.userDAO.findById(id);
-		
+
 		cate.setTen(ten);
 		cate.setUser(user);
-		
+
 		// TODO: this.categoryDAO.create(cate);
 	}
 }

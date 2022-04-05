@@ -11,12 +11,14 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.beanutils.BeanUtils;
 
 import beans.form_data.RegisterData;
 import dao.UserDAO;
 import entities.User;
+import utils.EncryptUtil;
 
 @WebServlet({
 	"/users/index",
@@ -106,16 +108,25 @@ public class UserServlet extends HttpServlet {
 		HttpServletRequest request,
 		HttpServletResponse response
 	) throws ServletException, IOException {
+		HttpSession session = request.getSession();
 		try {
 			User entity = new User();
 			BeanUtils.populate(entity,
 				request.getParameterMap());
+			String encrypted = EncryptUtil.encrypt(
+				request.getParameter("password")
+			);
+			entity.setPassword(encrypted);
 			this.userDAO.create(entity);
 			
+			session.setAttribute("message",
+				"Thêm mới thành công");
 			response.sendRedirect("/SP22B2_SOF3011_IT16304"
 				+ "/users/index");
 		} catch (Exception e) {
 			e.printStackTrace();
+			session.setAttribute("error",
+					"Thêm mới thất bại");
 			response.sendRedirect("/SP22B2_SOF3011_IT16304"
 				+ "/users/create");
 		}
