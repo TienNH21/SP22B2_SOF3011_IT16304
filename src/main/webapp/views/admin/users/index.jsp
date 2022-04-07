@@ -14,6 +14,7 @@
 	<div class="alert alert-danger">
 		${ sessionScope.error }
 	</div>
+	<c:remove var="error" scope="session" />
 </c:if>
 
 <c:if test="${ !empty sessionScope.message }">
